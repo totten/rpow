@@ -2,13 +2,24 @@ SET @foo = 123;
 
 SET @@foo = "bar";
 
-select @lastid := id from civicrm_contact;
+select @last_id := id from civicrm_contact;
+
+select @lastID2:=id From civicrm_contact;
 
 create temporary table foo;
 
 CREATE TEMPORARY TABLE foo (whiz bang);
 
 CREATE TEMPORARY TABLE IF NOT EXISTS foo (whiz bang);
+
+CREATE   TEMPORARY	TABLE	IF NOT EXISTS foo (whiz bang);
+
+CREATE
+TEMPORARY
+TABLE
+IF NOT
+EXISTS
+foo (whiz bang);
 
 DROP TEMPORARY TABLE foo;
 
