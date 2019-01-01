@@ -27,7 +27,7 @@ class StateMachine {
   /**
    * The buffer should be replayed on the read-write master.
    */
-  const REPLAY = 'p';
+  const REPLAY = 'rp';
 
   /**
    * @var string
