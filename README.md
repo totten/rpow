@@ -1,7 +1,7 @@
 # Replay-on-Write Helper (mysql-rpow)
 
-This is a small library to help route MySQL requests to (a) read-only slave
-and/or (b) read-write master.  The general idea is to connect to the
+This is a small utility for CiviCRM route MySQL requests to (a) read-only
+slave and/or (b) read-write master.  The general idea is to connect to the
 read-only slave in the typical read-only use-case...  then switch to the
 read-write master *if* there is an actual write.
 
@@ -132,6 +132,8 @@ not require any special mysqld options. Whenever you want the read-only
 slave to update, call `rebuild-ro` again.
 
 ## TODO
+
+Integration tests covering DB_civirpow
 
 Determine how to classify these statements:
 
