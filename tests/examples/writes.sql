@@ -46,6 +46,14 @@ SELECT
 *
 FROM t1 WHERE c1 = (SELECT c1 FROM t2 FOR UPDATE) FOR UPDATE;
 
+select
+get_lock
+("foo", 123);
+
+select (Get_Lock("foo", 123));
+
+select "foo",is_FREE_lock("bar");
+
 commit;
 
 Commit Work;

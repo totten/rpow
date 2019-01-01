@@ -59,7 +59,8 @@ class Classifier {
 
     // Micro-optimization: we'll execute most frequently in pure-read scenarios, so check those early on.
     if (mb_substr($sql, 0, 7) === 'select ') {
-      $isWrite = preg_match('(for update|for share|into outfile|into dumpfile)', $sql)
+      $isWrite = preg_match('; (for update|for share|into outfile|into dumpfile);', $sql) // keywords
+        || preg_match(';[ ,\(](get_lock|is_free_lock|is_used_lock) *\(;', $sql) // functions
         || ($trimmedSql === 'select "mysql-rpow-force-write"')
         || ($trimmedSql === 'select \'mysql-rpow-force-write\'');
       if ($isWrite) {
