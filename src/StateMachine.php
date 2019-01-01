@@ -108,4 +108,14 @@ class StateMachine {
     return $this->state;
   }
 
+  /**
+   * Force the system to use read-write, even if there have been no hints otherwise.
+   *
+   * @return $this
+   */
+  public function forceWriteMode() {
+    $this->state = self::READ_WRITE;
+    return $this;
+  }
+
 }
