@@ -13,7 +13,7 @@
 # DEV_SETTINGS_PHP=sites/default/civicrm.settings.d/pre.d/100-civirpow.php
 # DEV_SETTINGS_PHP=wp-content/uploads/civicrm/civicrm.settings.d/pre.d/100-civirpow.php
 
-## Credentials of the read-only user
+## When creating a read-only user, set the username+password to:
 # CIVIRO_USER=civiro
 # CIVIRO_PASS=r3ad0n1yt0ps3cr3t
 
