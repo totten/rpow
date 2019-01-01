@@ -22,23 +22,25 @@ This is designed for use-cases in which:
 
 Every SQL statement is (potentially) classified into one of three buckets:
 
-* `READ` (Ex: `SELECT * FROM foo`): The SQL statement has no side-effects; it simply reads data.
-* `BUFFER` (Ex: `SET @user_id = 123`): The SQL statement has no long-term, persistent side-effects; it can,
+* `TYPE_READ` (Ex: `SELECT * FROM foo`): The SQL statement has no side-effects; it simply reads data.
+* `TYPE_BUFFER` (Ex: `SET @user_id = 123`): The SQL statement has no long-term, persistent side-effects; it can,
   however, have temporary side-effects during the present MySQL session.
-* `WRITE` (Ex: `TRUNCATE foo`): The SQL statement has long-term, persistent side-effects and must be
+* `TYPE_WRITE` (Ex: `TRUNCATE foo`): The SQL statement has long-term, persistent side-effects and must be
    executed on the master. (Generally, if we can't demonstrate that something is `READ` or `BUFFER`,
    then we assume it is `WRITE`.)
 
 For more detailed examples of each category, browse [tests/examples](tests/examples).
 
-## Stages
+## Connection Stages
 
-* In the first stage, we execute straight-up read statements on the read-only slave.
-  Statements with connection-local side-effects (eg `SET @user_id=123` or `CREATE TEMPORARY TABLE...`)
-  are be stored in a buffer.
-* In the second stage, we encounter the first straight-up write statement.
-  We switch to read-write master, where we replay the buffer along with the write statement.
-* In the third/final stage, all statements are executed on the read-write master.
+* In the first stage, we connect to the read-only slave. We stay connected
+  as long as the SQL queries are read-oriented (`TYPE_READ`). Statements
+  with localized side-effects (`TYPE_BUFFER`) are stored in the a buffer.
+* In the second stage, we encounter the first straight-up write statement
+  (`TYPE_WRITE`).  We switch to read-write master, where we replay the buffer
+  along with the write statement.
+* In the third/final stage, all statements of any time (`TYPE_READ`,
+  `TYPE_BUFFER`, `TYPE_WRITE`) are executed on the read-write master.
 
 ## Consistency
 
@@ -133,7 +135,10 @@ slave to update, call `rebuild-ro` again.
 
 ## TODO
 
-Integration tests covering DB_civirpow
+Add integration tests covering DB_civirpow
+
+Add sticky reconnect feature -- for (eg) 2 minutes after a write, all
+subsequent connections should continue going to the read-write master.
 
 Determine how to classify these statements:
 
