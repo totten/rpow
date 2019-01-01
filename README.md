@@ -72,35 +72,71 @@ mitigating considerstions:
 
 Simply run `phpunit` without any arguments.
 
-## Usage
+## Setup (General)
 
-The exact usage depends on the environment in which you want to use the
-library. Generally, one expects pseudocode like this:
+* [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
-```php
-function handle_query($sql) {
-  static $sm = NULL;
-  if ($sm === NULL) {
-    $sm = new \MysqlRpow\StateMachine();
-  }
+* Download this project and its dependencies. The code may live anywhere
+  (inside or outside the site-root).
 
-  switch ($sm->handle($sql)) {
-    case 'ro':
-      // run $sql on a slave
-      break;
+  ```
+  git clone https://github.com/totten/mysql-rpow ~/src/rpow
+  cd ~/src/rpow
+  composer install
+  ```
 
-    case 'rw':
-      // run $sql on the master
-      break;
+* Edit `civicrm.settings.php`. In lieu of setting `CIVICRM_DSN`, call this:
+  ```php
+  require_once '/home/myuser/src/rpow/vendor/autoload.php';
+  civirpow_init([
+    'slaves' => ['mysql://ro_user:ro_pass@ro_host/ro_db?new_link=true'],
+    'masters' => ['mysql://rw_user:rw_pass@rw_host/rw_db?new_link=true'],
+  ]);
+  ```
 
-    case 'rp':
-      foreach ($sm->getBuffer() as $bufferedSql) {
-        // run $bufferedSql on master
-      }
-      break;
+* Setup the MySQL read-write and read-only databases -- and determine their
+  DSNs.  That process is outside the scope of this README.
 
-    default:
-      throw new \Exception("Unrecognized result from MysqlRpow\StateMachine::handle()");
-  }
-}
+## Setup (Development)
+
+If you have created a local D7 development site using `civibuild`, and if you've already
+[configured Redis](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/), then you can simulate
+a master/slave toplogy using `rebuild-ro`.
+
+```
+## Get the code
+git clone https://github.com/totten/mysql-rpow ~/src/rpow
+cd ~/src/rpow
+composer install
+
+## Setup a config file, esp:
+## - CIVIRO_PASS (for security)
+## - SITE_ROOT (for convenience)
+cp etc/rebuild-ro.conf.example etc/rebuild-ro.conf
+
+## Create a read-only DB. Register the DSN via civicrm.settings.d.
+./bin/rebuild-ro
+```
+
+The `rebuild-ro` script will:
+
+* Make a new database
+* Copy the CiviCRM tables to the new database
+* Add a user with read-only permission for the new database
+* Create a file `civicrm.settings.d/pre.d/100-civirpow.php` 
+  to call `civirpow_init()` with the appropriate credentials
+  for the `masters` and `slaves`.
+
+This is handy for simulating master=>slave replication manually. It does
+not require any special mysqld options. Whenever you want the read-only
+slave to update, call `rebuild-ro` again.
+
+## TODO
+
+Determine how to classify these statements:
+
+```
+SELECT GET_LOCK('${seqname}_lock',10"
+
+SELECT RELEASE_LOCK('${seqname}_lock'
 ```
