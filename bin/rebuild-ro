@@ -69,7 +69,7 @@ while [ -n "$1" ]; do
       ;;
 
     --write-none)
-      NO_WRITEABLE_TABLES=1
+      ## No longer needed: NO_WRITEABLE_TABLES=1
       ;;
 
     [a-z]*)
@@ -78,6 +78,7 @@ while [ -n "$1" ]; do
 
     -h|--help|-?)
       show_help
+      exit
       ;;
 
     *)
@@ -92,12 +93,6 @@ if [ -z "$SITE_ROOT" -o ! -e "$SITE_ROOT" ]; then
   echo "\"$SITE_ROOT\" is not a valid site root. Try passing --root." >&2
   show_help
   exit 3
-fi
-
-if [ -z "$WRITE_TABLES" -a -z "$NO_WRITEABLE_TABLES" ]; then
-  echo "Must specify which tables are writable: --write-none, --write-all-caches, or a manual listing" >&2
-  show_help
-  exit 2
 fi
 
 ######################################################
