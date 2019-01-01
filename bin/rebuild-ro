@@ -99,8 +99,8 @@ fi
 ## Main
 pushd "$SITE_ROOT"
 
-#x  echo "Dumping civi DB to $TMP_SQL_FILE"
-#x  dump_all > "$TMP_SQL_FILE"
+  echo_step "Dumping civi DB to $TMP_SQL_FILE"
+  dump_all > "$TMP_SQL_FILE"
 
   echo_step "Drop/create civiro DB"
   eval $( amp create -N civiro --skip-url --force --prefix=CIVIRO_ )
