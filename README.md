@@ -130,11 +130,37 @@ The `rebuild-ro` script will:
   for the `masters` and `slaves`.
 
 This is handy for simulating master=>slave replication manually. It does
-not require any special mysqld options. Whenever you want the read-only
-slave to update, call `rebuild-ro` again.
+not require any special mysqld options, but it does assume that you have a
+`civibuild`-based environment.
 
-When you are done doing development, you can go back to a standard
-configuration by deleting `civicrm.settings.d/pre.d/100-civirpow.php`.
+## Usage Example (Development)
+
+Here are some example steps to see it working in development:
+
+* In the browser
+    * Navigate to your CiviCRM dev site
+    * Do a search for all contacts
+    * View a contact
+    * Edit their name and save
+    * Make a mental note of the CID. (Ex: `123`)
+    * __Note__: The saved changes do not currently appear in the UI. Why?
+      Because they were saved to the read-write master, but we're viewing data from the
+      read-only slave.
+* In the CLI
+    * Lookup the contact record (ex: `123`) in both the master (`civi`) and slave (`civiro`) databases.
+      You should see that the write went to the master (`civi`) but not the slave (`civiro`).
+      ```
+      SQL="select id, display_name from civicrm_contact where id = 123;"
+      echo $SQL | amp sql -N civi ; echo; echo; echo $SQL | amp sql -N civiro
+      ```
+    * Update the slave.
+      ```
+      ./bin/rebuild-ro
+      ```
+
+TIP: When you are done doing development, delete the file
+`civicrm.settings.d/pre.d/100-civirpow.php`.  This will put your dev site back
+into a normal configuration with a single MySQL DSN.
 
 ## TODO
 
