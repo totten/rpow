@@ -4,7 +4,27 @@ namespace MysqlRpow;
 
 class Classifier {
 
-  const TYPE_READ = 'R', TYPE_WRITE = 'W', TYPE_BUFFER = 'B';
+  /**
+   * The SQL statement may be safely executed on a read-only slave.
+   *
+   * Ex: SELECT foo FROM BAR;
+   */
+  const TYPE_READ = 'R';
+
+  /**
+   * The SQL statement must be executed on the read-write master.
+   *
+   * Ex: INSERT INTO foo (bar) VALUES (123);
+   */
+  const TYPE_WRITE = 'W';
+
+  /**
+   * The SQL statement may be tentatively executed on a read-only slave; however,
+   * if there are subsequent changes, then we must re-play on the read-write master.
+   *
+   * Ex: SET @active_contact_id = 123;
+   */
+  const TYPE_BUFFER = 'B';
 
   /**
    * Determine whether the SQL expression represents a simple read, a write, or a buffer-required read.
@@ -15,6 +35,7 @@ class Classifier {
    *   TYPE_READ, TYPE_WRITE, or TYPE_BUFFER
    */
   public function classify($sql) {
+    // Distill to a normalized SQL expression -- simplify whitespace and capitalization; remove user-supplied strings.
     $sql = $this->stripStrings(
       preg_replace(';\s+;', ' ',
         mb_strtolower(
@@ -22,6 +43,8 @@ class Classifier {
         )
       )
     );
+
+    // Micro-optimization: we'll execute most frequently in pure-read scenarios, so check those first.
 
     if (mb_substr($sql, 0, 6) === 'select') {
       $isWrite = preg_match('(for update|for share|into outfile|into dumpfile)', $sql);
@@ -33,12 +56,13 @@ class Classifier {
       return $isBuffer ? self::TYPE_BUFFER : self::TYPE_READ;
     }
 
-    if (preg_match(';^(set|create temporary|drop temporary)\s;', $sql)) {
-      return self::TYPE_BUFFER;
+    if (preg_match(';^(desc|show|explain);', $sql)) {
+      return self::TYPE_READ;
     }
 
-    if (preg_match(';(desc|show)\s;', $sql)) {
-      return self::TYPE_READ;
+    if (preg_match(';^(set|begin|start transaction|set autocommit|create temporary|drop temporary);', $sql)) {
+      // "SET" and "SET autocommit" are technically redundant, but they should be considered logically distinct.
+      return self::TYPE_BUFFER;
     }
 
     return self::TYPE_WRITE;

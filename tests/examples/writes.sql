@@ -46,6 +46,20 @@ SELECT
 *
 FROM t1 WHERE c1 = (SELECT c1 FROM t2 FOR UPDATE) FOR UPDATE;
 
+commit;
+
+Commit Work;
+
+rollback;
+
+ROLLBACK AND NO CHAIN;
+
+flush privileges;
+
+savepoint foo;
+
+rollback to foo;
+
 UNRECOGNIZED ACTION;
 
 unrecognized action;
