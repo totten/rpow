@@ -1,3 +1,5 @@
+SET foo = "bar";
+
 SET @foo = 123;
 
 SET @@foo = "bar";
@@ -36,3 +38,5 @@ START TRANSACTION;
 BEGIN WORK;
 
 START TRANSACTION WITH CONSISTENT SNAPSHOT;
+
+savepoint foo;

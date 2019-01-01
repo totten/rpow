@@ -61,7 +61,7 @@ class Classifier {
       return self::TYPE_READ;
     }
 
-    if (preg_match(';^(set|begin|start transaction|set autocommit|create temporary|drop temporary);', $sql)) {
+    if (preg_match(';^(set|begin|savepoint|start transaction|set autocommit|create temporary|drop temporary);', $sql)) {
       // "SET" and "SET autocommit" are technically redundant, but they should be considered logically distinct.
       return self::TYPE_BUFFER;
     }

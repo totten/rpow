@@ -56,8 +56,6 @@ ROLLBACK AND NO CHAIN;
 
 flush privileges;
 
-savepoint foo;
-
 rollback to foo;
 
 UNRECOGNIZED ACTION;
