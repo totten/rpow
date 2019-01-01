@@ -39,3 +39,5 @@ SELECT "ALTER TABLE foo";
 SELECT "@foo := 123";
 
 EXPLAIN SELECT * from foobar;
+
+( SELECT * FROM civicrm_menu WHERE path in ( 'civicrm/admin/options/activity_type', 'civicrm/admin/options', 'civicrm/admin', 'civicrm' ) AND domain_id = 1 ORDER BY length(path) DESC LIMIT 1 ) UNION ( SELECT * FROM civicrm_menu WHERE path IN ( 'navigation' ) AND domain_id = 1 );

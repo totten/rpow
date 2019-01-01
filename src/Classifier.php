@@ -43,8 +43,21 @@ class Classifier {
     );
     $sql = $this->stripStrings($trimmedSql);
 
-    // Micro-optimization: we'll execute most frequently in pure-read scenarios, so check those first.
+    // Hard-dice: UNION statements require more parsing work.
+    if (mb_strpos($sql, ' union ') !== FALSE) {
+      $unionParts = explode(' union ', $sql);
+      $isBuffer = FALSE;
+      foreach ($unionParts as $unionPart) {
+        $subClassify = $this->classify($this->stripParens($unionPart));
+        if ($subClassify === self::TYPE_WRITE) {
+          return $subClassify;
+        }
+        $isBuffer = $isBuffer || ($subClassify == self::TYPE_BUFFER);
+      }
+      return $isBuffer ? self::TYPE_BUFFER : self::TYPE_READ;
+    }
 
+    // Micro-optimization: we'll execute most frequently in pure-read scenarios, so check those early on.
     if (mb_substr($sql, 0, 7) === 'select ') {
       $isWrite = preg_match('(for update|for share|into outfile|into dumpfile)', $sql)
         || ($trimmedSql === 'select "mysql-rpow-force-write"')
@@ -61,7 +74,7 @@ class Classifier {
       return self::TYPE_READ;
     }
 
-    if (preg_match(';^(set|begin|savepoint|start transaction|set autocommit|create temporary|drop temporary);', $sql)) {
+    if (preg_match(';^(/\*!40101 set|set|begin|savepoint|start transaction|set autocommit|create temporary|drop temporary);', $sql)) {
       // "SET" and "SET autocommit" are technically redundant, but they should be considered logically distinct.
       return self::TYPE_BUFFER;
     }
@@ -121,6 +134,19 @@ class Classifier {
     }
 
     return $buf;
+  }
+
+  public function stripParens($sql) {
+    if ($sql{0} !== '(') {
+      return $sql;
+    }
+
+    $len = mb_strlen($sql);
+    if ($sql{$len - 1} !== ')') {
+      return $sql;
+    }
+
+    return mb_substr($sql, 1, $len - 2);
   }
 
 }

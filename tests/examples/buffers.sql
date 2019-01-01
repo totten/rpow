@@ -4,6 +4,8 @@ SET @foo = 123;
 
 SET @@foo = "bar";
 
+/*!40101 SET NAMES utf8 */
+
 select @last_id := id from civicrm_contact;
 
 select @lastID2:=id From civicrm_contact;
