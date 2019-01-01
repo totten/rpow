@@ -133,6 +133,9 @@ This is handy for simulating master=>slave replication manually. It does
 not require any special mysqld options. Whenever you want the read-only
 slave to update, call `rebuild-ro` again.
 
+When you are done doing development, you can go back to a standard
+configuration by deleting `civicrm.settings.d/pre.d/100-civirpow.php`.
+
 ## TODO
 
 Add integration tests covering DB_civirpow
