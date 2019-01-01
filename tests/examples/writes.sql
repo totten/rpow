@@ -63,3 +63,7 @@ rollback to foo;
 UNRECOGNIZED ACTION;
 
 unrecognized action;
+
+SELECT 'mysql-rpow-force-write';
+
+SELECT "mysql-rpow-force-write";

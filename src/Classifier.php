@@ -29,30 +29,31 @@ class Classifier {
   /**
    * Determine whether the SQL expression represents a simple read, a write, or a buffer-required read.
    *
-   * @param string $sql
+   * @param string $rawSql
    *   An SQL statement
    * @return string
    *   TYPE_READ, TYPE_WRITE, or TYPE_BUFFER
    */
-  public function classify($sql) {
+  public function classify($rawSql) {
     // Distill to a normalized SQL expression -- simplify whitespace and capitalization; remove user-supplied strings.
-    $sql = $this->stripStrings(
-      preg_replace(';\s+;', ' ',
-        mb_strtolower(
-          trim($sql)
-        )
+    $trimmedSql = preg_replace(';\s+;', ' ',
+      mb_strtolower(
+        trim($rawSql)
       )
     );
+    $sql = $this->stripStrings($trimmedSql);
 
     // Micro-optimization: we'll execute most frequently in pure-read scenarios, so check those first.
 
-    if (mb_substr($sql, 0, 6) === 'select') {
-      $isWrite = preg_match('(for update|for share|into outfile|into dumpfile)', $sql);
+    if (mb_substr($sql, 0, 7) === 'select ') {
+      $isWrite = preg_match('(for update|for share|into outfile|into dumpfile)', $sql)
+        || ($trimmedSql === 'select "mysql-rpow-force-write"')
+        || ($trimmedSql === 'select \'mysql-rpow-force-write\'');
       if ($isWrite) {
         return self::TYPE_WRITE;
       }
 
-      $isBuffer = preg_match(';@[a-zA-Z0-9_\s]+:=;', $sql) || preg_match('(into @)', $sql);
+      $isBuffer = preg_match(';@[a-zA-Z0-9_\s]+:=;', $sql) || (mb_strpos($sql, ' into @') !== FALSE);
       return $isBuffer ? self::TYPE_BUFFER : self::TYPE_READ;
     }
 
