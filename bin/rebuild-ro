@@ -1,10 +1,16 @@
 #!/bin/bash
 
-TMP_SQL_FILE=/tmp/full-data.mysql
-SITE_ROOT=$HOME/bknix/build/dmaster
+CIVIRPOWBIN="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+CIVIRPOWDIR="$(dirname $CIVIRPOWBIN)"
+
+TMP_SQL_FILE=$(php -r 'echo sys_get_temp_dir() . DIRECTORY_SEPARATOR . "civiro.sql";')
+DEV_SETTINGS_PHP=sites/default/civicrm.settings.d/pre.d/100-civirpow.php
+SITE_ROOT=
 CIVIRO_USER=civiro
 CIVIRO_PASS=r3ad0n1yt0ps3cr3t
 WRITE_TABLES=
+
+[ -f "$CIVIRPOWDIR/etc/rebuild-ro.conf" ] && source "$CIVIRPOWDIR/etc/rebuild-ro.conf"
 
 ######################################################
 function do_dump() {
@@ -30,7 +36,8 @@ function dump_all() {
 }
 
 function show_help() {
-  echo "Generate a (mostly) readonly database. Allow selected tables to be writable."
+  echo ""
+  echo "about: Generate a (mostly) readonly database. Allow selected tables to be writable."
   echo "usage: $0 [-r <path>|--root <path>] [--write-none|--write-all-caches|<writable_table...>]"
   echo ""
   echo "This script uses a few inferred values:"
@@ -38,6 +45,10 @@ function show_help() {
   echo "- TMP_SQL_FILE: $TMP_SQL_FILE"
   echo "- CIVIRO_USER: $CIVIRO_USER"
   echo "- CIVIRO_PASS: $CIVIRO_PASS"
+}
+
+function echo_step() {
+  echo "[[ $@ ]]"
 }
 
 ######################################################
@@ -93,29 +104,41 @@ fi
 ## Main
 pushd "$SITE_ROOT"
 
-  echo "Dumping civi DB to $TMP_SQL_FILE"
-  dump_all > "$TMP_SQL_FILE"
+#x  echo "Dumping civi DB to $TMP_SQL_FILE"
+#x  dump_all > "$TMP_SQL_FILE"
 
-  echo "Drop/create civiro DB"
+  echo_step "Drop/create civiro DB"
   eval $( amp create -N civiro --skip-url --force --prefix=CIVIRO_ )
-  echo " ... created $CIVIRO_DB_NAME"
+  echo_step " ... created $CIVIRO_DB_NAME"
 
-  echo "Fill civiro using $TMP_SQL_FILE"
+  echo_step "Fill civiro using $TMP_SQL_FILE"
   echo "connect $CIVIRO_DB_NAME;" | cat - "$TMP_SQL_FILE" | amp sql -N civiro -a
 
   for ATEXPR in localhost '%' ; do
-    echo "Revoke access for '$CIVIRO_USER'@'$ATEXPR'"
+    echo_step "Revoke access for '$CIVIRO_USER'@'$ATEXPR'"
     echo "REVOKE ALL PRIVILEGES, GRANT OPTION FROM '$CIVIRO_USER'@'$ATEXPR'" | amp sql -N civiro -a
-    echo "Grant read access for '$CIVIRO_USER'@'$ATEXPR'"
+    echo_step "Grant read access for '$CIVIRO_USER'@'$ATEXPR'"
     echo "GRANT SELECT, CREATE TEMPORARY TABLES ON $CIVIRO_DB_NAME.* TO '$CIVIRO_USER'@'$ATEXPR' IDENTIFIED BY \"$CIVIRO_PASS\"" | amp sql -N civiro -a
-    echo "Grant write access for '$CIVIRO_USER'@'$ATEXPR' to tables: $WRITE_TABLES"
+    echo_step "Grant write access for '$CIVIRO_USER'@'$ATEXPR' to tables: $WRITE_TABLES"
     for CACHE_TABLE in $WRITE_TABLES ; do 
       echo "GRANT INSERT, UPDATE, DELETE ON $CIVIRO_DB_NAME.$CACHE_TABLE TO '$CIVIRO_USER'@'$ATEXPR'" | amp sql -N civiro -a
     done
   done
 
-  echo "To connect to the civiro DB:"
-  echo " - DSN: mysql://$CIVIRO_USER:$CIVIRO_PASS@$CIVIRO_DB_HOST:$CIVIRO_DB_PORT/$CIVIRO_DB_NAME?new_link=true"
-  echo " - CLI: mysql -u $CIVIRO_USER -p$CIVIRO_PASS -h $CIVIRO_DB_HOST -P $CIVIRO_DB_PORT $CIVIRO_DB_NAME"
+  echo_step "Create $DEV_SETTINGS_PHP"
+  mkdir -p $(dirname "$DEV_SETTINGS_PHP")
+  eval $( amp export -N civi --prefix=CIVI_ )
+  cat <<EOSETTING > "$DEV_SETTINGS_PHP"
+<?php
+require '$CIVIRPOWDIR/include/init.php';
+civirpow_init([
+  'slaves' => ['mysql://$CIVIRO_USER:$CIVIRO_PASS@$CIVIRO_DB_HOST:$CIVIRO_DB_PORT/$CIVIRO_DB_NAME?new_link=true'],
+  'masters' => ['mysql://$CIVI_DB_USER:$CIVI_DB_PASS@$CIVI_DB_HOST:$CIVI_DB_PORT/$CIVI_DB_NAME?new_link=true'],
+]);
+EOSETTING
+
+  echo_step "To connect to the civiro DB:"
+  echo_step " - DSN: mysql://$CIVIRO_USER:$CIVIRO_PASS@$CIVIRO_DB_HOST:$CIVIRO_DB_PORT/$CIVIRO_DB_NAME?new_link=true"
+  echo_step " - CLI: mysql -u $CIVIRO_USER -p$CIVIRO_PASS -h $CIVIRO_DB_HOST -P $CIVIRO_DB_PORT $CIVIRO_DB_NAME"
 
 popd
