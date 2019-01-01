@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * (Untested/WIP) Adapter for use with mysqlnd_ms_set_user_pick_server
+ */
 function mysql_rpow_ms_adapter($connected, $query, $masters, $slaves, $last_used_connection, $in_transaction) {
   static $sm = NULL;
   if ($sm === NULL) {

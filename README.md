@@ -1,4 +1,4 @@
-# PHP-MySQL Replay-on-Write Helper (RPOW)
+# Replay-on-Write Helper (mysql-rpow)
 
 This is a small library to help route MySQL requests to (a) read-only slave
 and/or (b) read-write master.  The general idea is to connect to the
@@ -18,9 +18,9 @@ This is designed for use-cases in which:
 * There is no simpler or more correct way to predict which users/page-views will need read-write operations.
   (Or: you need a fallback in case the predictions are imperfect.)
 
-## Classification
+## Classifications
 
-Every SQL statement can be classified into one of three buckets:
+Every SQL statement is (potentially) classified into one of three buckets:
 
 * `READ` (Ex: `SELECT * FROM foo`): The SQL statement has no side-effects; it simply reads data.
 * `BUFFER` (Ex: `SET @user_id = 123`): The SQL statement has no long-term, persistent side-effects; it can,
@@ -29,10 +29,12 @@ Every SQL statement can be classified into one of three buckets:
    executed on the master. (Generally, if we can't demonstrate that something is `READ` or `BUFFER`,
    then we assume it is `WRITE`.)
 
+For more detailed examples of each category, browse [tests/examples](tests/examples).
+
 ## Stages
 
 * In the first stage, we execute straight-up read statements on the read-only slave.
-  Statements with connection-local side-effects (eg "SET @user_id=123" or "CREATE TEMPORARY TABLE...")
+  Statements with connection-local side-effects (eg `SET @user_id=123` or `CREATE TEMPORARY TABLE...`)
   are be stored in a buffer.
 * In the second stage, we encounter the first straight-up write statement.
   We switch to read-write master, where we replay the buffer along with the write statement.
@@ -40,7 +42,7 @@ Every SQL statement can be classified into one of three buckets:
 
 ## Consistency
 
-RPOW provides *some* consistency, but it also has some limitations.
+mysql-rpow provides *some* consistency, but it also has some limitations.
 
 *Within a MySQL given session*, you can mix various read+write operations --
 for example, insert a record, read the record, then update it, and then read
@@ -52,19 +54,53 @@ the connection (before the first write), you'll read data from a slave
 (instead of the master) -- so it may start with a dirty-read. A few
 mitigating considerstions:
 
-* Hopefully, some dirty-reads are acceptable.  If dirty-reads are a significant problem, you
-  probably wouldn't have chosen an architecture based on single-write-master/multiple-read-slaves!
-* If you know that a use-case will be writing and must have fresh reads, you
-  can either call `$stateMachine->forceWriteMode()` or (if you don't have
-  access to `$stateMachine`) issue a request for the constant `SELECT "mysql-rpow-force-write"`.
-* If you have a propagation delay between the master+slave (e.g. 30sec), then users may be more
-  sensitive to dirty-reads within the propagation period (e.g. 30sec). Use an HTTP cookie or HTTP session-variable
-  to force them on enable `forceWriteMode()` for new page-views in the subsequent 30-60 sec.
-  (TODO: Example code)
+* Hopefully, some dirty-reads are acceptable.  If dirty-reads are a total show-stopper, then you
+  might be looking in the wrong place.
 
-## Usage (WIP)
+* If you know that a use-case will be writing and must have fresh reads, you can give a hint
+  to force it into write mode; either
+    * Call `$stateMachine->forceWriteMode()`, or...
+    * (If you don't have access to `$stateMachine`) Issue a request for the dummy query
+      `SELECT "mysql-rpow-force-write"`.
+
+* If your environment regularly has a perceptible propagation delay between the master+slave (e.g.  30sec), then users
+  may be more sensitive to dirty-reads within the propagation period (e.g.  30sec).  Use an HTTP cookie or HTTP
+  session-variable to force them on enable `forceWriteMode()` for new page-views in the subsequent 30-60 sec.  (TODO:
+  Example code)
+
+## Unit Tests
+
+Simply run `phpunit` without any arguments.
+
+## Usage
+
+The exact usage depends on the environment in which you want to use the
+library. Generally, one expects pseudocode like this:
 
 ```php
-require_once 'vendor/autoload.php';
-mysqlnd_ms_set_user_pick_server('mysql_rpow_ms_adapter');
+function handle_query($sql) {
+  static $sm = NULL;
+  if ($sm === NULL) {
+    $sm = new \MysqlRpow\StateMachine();
+  }
+
+  switch ($sm->handle($sql)) {
+    case 'ro':
+      // run $sql on a slave
+      break;
+
+    case 'rw':
+      // run $sql on the master
+      break;
+
+    case 'rp':
+      foreach ($sm->getBuffer() as $bufferedSql) {
+        // run $bufferedSql on master
+      }
+      break;
+
+    default:
+      throw new \Exception("Unrecognized result from MysqlRpow\StateMachine::handle()");
+  }
+}
 ```
