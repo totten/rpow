@@ -13,9 +13,6 @@
  *   ])
  */
 function civirpow_init($config = []) {
-  // Native classes
-  require_once dirname(__DIR__) . '/vendor/autoload.php';
-
   // PEAR DB classes
   set_include_path(dirname(__DIR__) . PATH_SEPARATOR . get_include_path());
 

@@ -130,7 +130,7 @@ pushd "$SITE_ROOT"
   eval $( amp export -N civi --prefix=CIVI_ )
   cat <<EOSETTING > "$DEV_SETTINGS_PHP"
 <?php
-require '$CIVIRPOWDIR/include/init.php';
+require_once '$CIVIRPOWDIR/vendor/autoload.php';
 civirpow_init([
   'slaves' => ['mysql://$CIVIRO_USER:$CIVIRO_PASS@$CIVIRO_DB_HOST:$CIVIRO_DB_PORT/$CIVIRO_DB_NAME?new_link=true'],
   'masters' => ['mysql://$CIVI_DB_USER:$CIVI_DB_PASS@$CIVI_DB_HOST:$CIVI_DB_PORT/$CIVI_DB_NAME?new_link=true'],

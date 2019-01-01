@@ -11,9 +11,10 @@
     "autoload": {
         "psr-4": {
             "MysqlRpow\\": "src/"
-         }
+         },
+        "files": [
+            "src/init.php"
+        ]
     },
-    "files": [
-    ],
     "require": {}
 }
