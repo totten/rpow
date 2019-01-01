@@ -9,7 +9,7 @@
  * @param array $config
  *   Ex: [
  *    'slaves' => ['mysql://ro_user:ro_pass@ro_host/ro_db?new_link=true'],
- *    'masters' => [mysql://rw_user:rw_pass@rw_host/rw_db?new_link=true'],
+ *    'masters' => ['mysql://rw_user:rw_pass@rw_host/rw_db?new_link=true'],
  *   ])
  */
 function civirpow_init($config = []) {
