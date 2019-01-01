@@ -13,5 +13,8 @@
             "MysqlRpow\\": "src/"
          }
     },
+    "files": [
+        "src/mysqlnd_ms_adapter.php"
+    ],
     "require": {}
 }
