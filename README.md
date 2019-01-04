@@ -168,3 +168,18 @@ Add integration tests covering DB_civirpow
 
 Add sticky reconnect feature -- for (eg) 2 minutes after a write, all
 subsequent connections should continue going to the read-write master.
+
+debug toolbar is wonky, and it's hard to tell if it's ux or underlying
+behavior. change ux to be a full-width bar at the bottom which displays
+all available info. (instead of requiring extra clicks to drilldown)
+
+optimistic-locking doesn't work -- it always reads the timestamp from rodb
+before reconnecting to rwdb. any use-case that does optimistic-locking needs
+a hint to force the reconnect beforehand.
+
+packaging as a separate project makes it feel a bit sketchy to drop hints
+into civicrm-core.  consider ways to deal with this (e.g.  package as part
+of core s.t.  the hint notation is built-in; e.g.  figure out a way to make
+the hint-notation abstract...  like with a listner/dispatcher pattern...
+but tricky b/c DB and some caches come online during bootstrap, before we've
+setup our regular dispatch subsystem)
