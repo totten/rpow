@@ -33,6 +33,22 @@ Select * FROM hello_world where `name` = "foo" AND id in (select @bar := id FROM
 
 SELECT id, data INTO @x, @y FROM test.t1 LIMIT 1;
 
+INSERT IGNORE INTO civicrm_tmp_e_foobar (col1, col2) values (1, 2);
+
+INSERT IGNORE INTO `civicrm_tmp_e_foobar` (col1, col2) values (1, 2);
+
+INSERT INTO civicrm_tmp_e_foobar (col1, col2) values (1, 2);
+
+UPDATE civicrm_tmp_e_foobar SET foo = bar;
+
+UPDATE `civicrm_tmp_e_foobar` SET foo = bar;
+
+UPDATE `civicrm_tmp_e_foo`, civicrm_tmp_e_bar SET foo = bar;
+
+DELETE FROM civicrm_tmp_e_foobar;
+
+DELETE FROM `civicrm_tmp_e_foobar` WHERE foo = bar;
+
 BEGIN;
 
 START TRANSACTION;

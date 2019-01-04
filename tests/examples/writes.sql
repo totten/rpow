@@ -4,12 +4,24 @@ Insert into foo (col1, col2) values ("1", 'two');
 
 INSERT into foo values ("one", "two");
 
+INSERT into foo values ("INSERT INTO civicrm_tmp_e_foobar (col1, col2) values (1, 2)");
+
+INSERT into foo values ("DELETE FROM civicrm_tmp_e_foobar");
+
+INSERT into foo values ("DELETE FROM `civicrm_tmp_e_foobar`");
+
+INSERT INTO civicrm_foobar_123 (id, civicrm_tmp_e_foobar) values (1, 2);
+
 insert into foo select * from bar 
 on duplicate key update whiz = b(ang);
 
 update foo set bar = 1 where whiz = b(ang);
 
 Update Ignore foo Set bar = 1 Limit 10;
+
+UPDATE `civicrm_tmp_e_foo`, civicrm_contact SET foo = bar;
+
+UPDATE civicrm_foobar_123 SET civicrm_tmp_e_foo = 123;
 
 DELETE FROM foo;
 
