@@ -87,3 +87,7 @@ SELECT 'mysql-rpow-force-write';
 SELECT "mysql-rpow-force-write";
 
 DESCR is not an action;
+
+(SELECT 123) UNION (SELECT GET_LOCK("foo", 456));
+
+SELECT 123 UNION SELECT GET_LOCK("foo", 456);
