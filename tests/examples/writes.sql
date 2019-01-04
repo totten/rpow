@@ -82,9 +82,9 @@ UNRECOGNIZED ACTION;
 
 unrecognized action;
 
-SELECT 'mysql-rpow-force-write';
+SELECT 'civirpow-force-write';
 
-SELECT "mysql-rpow-force-write";
+SELECT "civirpow-force-write";
 
 DESCR is not an action;
 

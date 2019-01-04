@@ -1,4 +1,4 @@
-# Replay-on-Write Helper (mysql-rpow)
+# CiviCRM Replay-on-Write Helper (civirpow)
 
 This is a small utility for CiviCRM which routes MySQL requests to (a) read-only
 slave DB and/or (b) read-write master DB.  The general idea is to connect to the
@@ -44,7 +44,7 @@ For more detailed examples of each category, browse [tests/examples](tests/examp
 
 ## Consistency
 
-mysql-rpow provides *some* consistency, but it also has some limitations.
+civirpow provides *some* consistency, but it also has some limitations.
 
 *Within a MySQL given session*, you can mix various read+write operations --
 for example, insert a record, read the record, then update it, and then read
@@ -63,7 +63,7 @@ mitigating considerstions:
   to force it into write mode; either
     * Call `$stateMachine->forceWriteMode()`, or...
     * (If you don't have access to `$stateMachine`) Issue a request for the dummy query
-      `SELECT "mysql-rpow-force-write"`.
+      `SELECT "civirpow-force-write"`.
 
 * If your environment regularly has a perceptible propagation delay between the master+slave (e.g.  30sec), then users
   may be more sensitive to dirty-reads within the propagation period (e.g.  30sec).  Use an HTTP cookie or HTTP

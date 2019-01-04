@@ -10,7 +10,7 @@
          bootstrap="tests/bootstrap.php"
 >
   <testsuites>
-    <testsuite name="mysql-rpow test tuite">
+    <testsuite name="civirpow test tuite">
       <directory>./tests/</directory>
     </testsuite>
   </testsuites>

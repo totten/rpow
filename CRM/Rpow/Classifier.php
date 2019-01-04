@@ -65,8 +65,8 @@ class CRM_Rpow_Classifier {
       $isWrite = preg_match('; (for update|for share|into outfile|into dumpfile);', $sql) // keywords
         // FIXME: This is more correct, but civicrm-core may be a bit too eager with using them?
         || preg_match(';[ ,\(](get_lock|is_free_lock|is_used_lock) *\(;', $sql) // functions
-        || ($trimmedSql === 'select "mysql-rpow-force-write"')
-        || ($trimmedSql === 'select \'mysql-rpow-force-write\'');
+        || ($trimmedSql === 'select "civirpow-force-write"')
+        || ($trimmedSql === 'select \'civirpow-force-write\'');
       if ($isWrite) {
         return self::TYPE_WRITE;
       }
