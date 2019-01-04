@@ -85,3 +85,5 @@ unrecognized action;
 SELECT 'mysql-rpow-force-write';
 
 SELECT "mysql-rpow-force-write";
+
+DESCR is not an action;

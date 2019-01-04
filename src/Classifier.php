@@ -97,7 +97,7 @@ class Classifier {
       }
     }
 
-    if (preg_match(';^(desc|show|explain);', $sql)) {
+    if (preg_match(';^(desc|describe|show|explain) ;', $sql)) {
       return self::TYPE_READ;
     }
 
