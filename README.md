@@ -89,7 +89,7 @@ Simply run `phpunit` without any arguments.
 
   ```php
   require_once '/PATH/TO/rpow/autoload.php';
-  civirpow_init([
+  rpow_init([
     'slaves' => ['mysql://ro_user:ro_pass@ro_host/ro_db?new_link=true'],
     'masters' => ['mysql://rw_user:rw_pass@rw_host/rw_db?new_link=true'],
   ]);
@@ -125,7 +125,7 @@ The `rebuild-ro` script will:
 * Copy the CiviCRM tables to the new database
 * Add a user with read-only permission for the new database
 * Create a file `civicrm.settings.d/pre.d/100-civirpow.php` 
-  to call `civirpow_init()` with the appropriate credentials
+  to call `rpow_init()` with the appropriate credentials
   for the `masters` and `slaves`.
 
 This is handy for simulating master=>slave replication manually. It does

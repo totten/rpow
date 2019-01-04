@@ -1,7 +1,7 @@
 <?php
 
 // Load global functions
-require_once __DIR__ . '/rpow.funcs.php';
+require_once __DIR__ . '/rpow.php';
 
 // Allow PEAR DB to find our DB driver class
 // NOTE: The civix templates will also register this post-boot, but we need it pre-boot. So it goes.
