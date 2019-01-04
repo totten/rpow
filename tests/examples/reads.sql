@@ -36,6 +36,8 @@ SELECT "CREATE TEMPORARY TABLE foo";
 
 SELECT "ALTER TABLE foo";
 
+SELECT "DELETE FROM civicrm_tmp_e_foobar";
+
 SELECT "@foo := 123";
 
 select (udf_not_really_Get_Lock("foo", 123));

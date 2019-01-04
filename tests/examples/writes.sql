@@ -91,3 +91,13 @@ DESCR is not an action;
 (SELECT 123) UNION (SELECT GET_LOCK("foo", 456));
 
 SELECT 123 UNION SELECT GET_LOCK("foo", 456);
+
+CALL storedproc;
+
+CALL storedproc();
+
+CALL storedproc("foo bar");
+
+PREPARE s FROM 'CALL p(?, ?)';
+
+EXECUTE s USING @version, @increment;
