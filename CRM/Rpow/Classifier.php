@@ -1,8 +1,6 @@
 <?php
 
-namespace MysqlRpow;
-
-class Classifier {
+class CRM_Rpow_Classifier {
 
   /**
    * The SQL statement may be safely executed on a read-only slave.

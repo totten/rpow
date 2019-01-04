@@ -3,6 +3,8 @@
 require_once 'DB/common.php';
 require_once 'DB/mysqli.php';
 
+use CRM_Rpow_StateMachine as StateMachine;
+
 /**
  * This is a wrapper for DB_mysqli which swaps the underlying connection
  * in accordance with the "replay-on-write" strategy.
@@ -18,7 +20,7 @@ class DB_civirpow extends DB_mysqli {
   var $phptype = 'civirpow';
 
   /**
-   * @var \MysqlRpow\StateMachine
+   * @var StateMachine
    */
   public $stateMachine;
 
@@ -36,11 +38,11 @@ class DB_civirpow extends DB_mysqli {
     $config = $this->getConfig();
 
     switch ($this->stateMachine->getState()) {
-      case \MysqlRpow\StateMachine::READ_ONLY:
+      case StateMachine::READ_ONLY:
         $dsns = $config['slaves'];
         break;
 
-      case \MysqlRpow\StateMachine::READ_WRITE:
+      case StateMachine::READ_WRITE:
         $dsns = $config['masters'];
     }
 
@@ -54,11 +56,11 @@ class DB_civirpow extends DB_mysqli {
   public function simpleQuery($query) {
     // echo "<pre>[[[$query]]]</pre> <br>";
     switch ($this->stateMachine->handle($query)) {
-      case \MysqlRpow\StateMachine::READ_ONLY:
-      case \MysqlRpow\StateMachine::READ_WRITE:
+      case StateMachine::READ_ONLY:
+      case StateMachine::READ_WRITE:
         return parent::simpleQuery($query);
 
-      case \MysqlRpow\StateMachine::REPLAY:
+      case StateMachine::REPLAY:
         return $this->reconnectAndReplay();
     }
   }
@@ -94,7 +96,7 @@ class DB_civirpow extends DB_mysqli {
    * If we're not using it already, then switch over to it.
    */
   protected function forceWriteMode() {
-    if ($this->stateMachine->getState() === \MysqlRpow\StateMachine::READ_WRITE) {
+    if ($this->stateMachine->getState() === StateMachine::READ_WRITE) {
       return;
     }
 

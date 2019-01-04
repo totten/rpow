@@ -30,7 +30,7 @@ function civirpow_init($config = []) {
     'cookieSigningKey' => $defaultCookieSigningKey,
     'cookieName' => 'rpow' . substr(md5('cookie::' . $defaultCookieSigningKey), 0, 8),
     'cookieTtl' => 10 * 60,
-    'stateMachine' => new \MysqlRpow\StateMachine(),
+    'stateMachine' => new CRM_Rpow_StateMachine(),
     'debug' => 1,
   ];
   $config = array_merge($defaults, $config);

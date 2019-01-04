@@ -1,6 +1,6 @@
 <?php
 
-namespace MysqlRpow;
+use CRM_Rpow_Classifier as Classifier;
 
 /**
  * Use MySQL connections with (up to) three stages;
@@ -12,7 +12,7 @@ namespace MysqlRpow;
  *   We switch to read-write master, where we replay the buffer along with the write statement.
  * - In the third/final stage, all statements are executed on the read-write master.
  */
-class StateMachine {
+class CRM_Rpow_StateMachine {
 
   /**
    * The current SQL should be directed to the read-only slave.
@@ -77,7 +77,7 @@ class StateMachine {
         }
 
       default:
-        throw new \RuntimeException("MysqlRpow: Encountered unknown state");
+        throw new \RuntimeException("Rpow: Encountered unknown state");
 
     }
   }

@@ -1,8 +1,6 @@
 <?php
 
-namespace MysqlRpow;
-
-class ExampleLoader {
+class CRM_Rpow_ExampleLoader {
 
   /**
    * @param string $file

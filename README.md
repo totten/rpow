@@ -78,18 +78,17 @@ Simply run `phpunit` without any arguments.
 
 * [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
-* Download this project and its dependencies. The code may live anywhere
-  (inside or outside the site-root).
+* Download the extension, e.g.
 
   ```
-  git clone https://github.com/totten/mysql-rpow ~/src/rpow
-  cd ~/src/rpow
-  composer install
+  cd /var/www/sites/default/civicrm/ext
+  git clone https://github.com/totten/rpow
   ```
 
 * Edit `civicrm.settings.php`. In lieu of setting `CIVICRM_DSN`, call this:
+
   ```php
-  require_once '/home/myuser/src/rpow/vendor/autoload.php';
+  require_once '/PATH/TO/rpow/autoload.php';
   civirpow_init([
     'slaves' => ['mysql://ro_user:ro_pass@ro_host/ro_db?new_link=true'],
     'masters' => ['mysql://rw_user:rw_pass@rw_host/rw_db?new_link=true'],
@@ -107,9 +106,9 @@ a master/slave toplogy using `rebuild-ro`.
 
 ```
 ## Get the code
-git clone https://github.com/totten/mysql-rpow ~/src/rpow
-cd ~/src/rpow
-composer install
+cd /var/www/sites/default/civicrm/ext
+git clone https://github.com/totten/rpow
+cd rpow
 
 ## Setup a config file, esp:
 ## - CIVIRO_PASS (for security)

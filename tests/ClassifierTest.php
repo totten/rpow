@@ -1,8 +1,8 @@
 <?php
 
-namespace MysqlRpow;
+use CRM_Rpow_Classifier as Classifier;
 
-class ClassifierTest extends \PHPUnit_Framework_TestCase {
+class CRM_Rpow_ClassifierTest extends \PHPUnit_Framework_TestCase {
 
   public function getExampleFiles() {
     $files = [
@@ -13,7 +13,7 @@ class ClassifierTest extends \PHPUnit_Framework_TestCase {
 
     $exs = [];
     foreach ($files as $expectOutput => $file) {
-      $sqls = \MysqlRpow\ExampleLoader::load($file);
+      $sqls = CRM_Rpow_ExampleLoader::load($file);
       foreach ($sqls as $sql) {
         $exs[] = [$expectOutput, $sql];
       }

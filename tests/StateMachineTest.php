@@ -1,8 +1,8 @@
 <?php
 
-namespace MysqlRpow;
+use CRM_Rpow_StateMachine as StateMachine;
 
-class StateMachineTest extends \PHPUnit_Framework_TestCase {
+class CRM_Rpow_StateMachineTest extends \PHPUnit_Framework_TestCase {
 
   public function testNormalLifecycle() {
     $s = new StateMachine();
