@@ -86,6 +86,7 @@ class Classifier {
       // UPDATE [LOW_PRIORITY] [IGNORE] table_reference SET
       if (preg_match(';^update (low_priority |ignore )*([\w,` ]+) set;', $sql, $matches)) {
         // If *all* updated tables are temp, then TYPE_BUFFER. But if *any* are durable, then TYPE_WRITE.
+        // FIXME: Does MySQL UPDATE also do table-aliases and joins?
         $tables = preg_split(';,\s*;', $matches[2]);
         if ($tables === preg_grep(';^civicrm_tmp_e;', $tables)) {
           return self::TYPE_BUFFER;
