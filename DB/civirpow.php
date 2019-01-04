@@ -20,15 +20,20 @@ class DB_civirpow extends DB_mysqli {
   /**
    * @var \MysqlRpow\StateMachine
    */
-  var $stateMachine;
+  public $stateMachine;
 
   public function __construct() {
-    $this->stateMachine = new \MysqlRpow\StateMachine();
+    $config = $this->getConfig();
+    $this->stateMachine = $config['stateMachine'];
+    if (!empty($config['forceWrite'])) {
+      $this->stateMachine->forceWriteMode();
+    }
+
     parent::__construct();
   }
 
   public function connect($dsn, $persistent = FALSE) {
-    $config = $GLOBALS['civirpow'];
+    $config = $this->getConfig();
 
     switch ($this->stateMachine->getState()) {
       case \MysqlRpow\StateMachine::READ_ONLY:
@@ -66,6 +71,7 @@ class DB_civirpow extends DB_mysqli {
    *   The result of executing the last replay-query.
    */
   protected function reconnectAndReplay() {
+    $config = $this->getConfig();
     $this->disconnect();
     $this->connect([]);
 
@@ -73,6 +79,12 @@ class DB_civirpow extends DB_mysqli {
     // dpm(['replaying' => $this->stateMachine->getBuffer()]);
     foreach ($this->stateMachine->getBuffer() as $bufferedSql) {
       $result = parent::simpleQuery($bufferedSql);
+    }
+
+    if (isset($config['onReconnect'])) {
+      foreach ($config['onReconnect'] as $callback) {
+        call_user_func($callback, $config, $this);
+      }
     }
     return $result;
   }
@@ -112,6 +124,13 @@ class DB_civirpow extends DB_mysqli {
     // Not sure if this is needed, but it's a fair precaution.
     $this->forceWriteMode();
     return parent::tableInfo();
+  }
+
+  /**
+   * @return mixed
+   */
+  protected function getConfig() {
+    return $GLOBALS['civirpow'];
   }
 
 }
