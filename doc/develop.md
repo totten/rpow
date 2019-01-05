@@ -76,8 +76,7 @@ Simply run `phpunit` without any arguments.
 
 Add integration tests covering DB_civirpow
 
-Add sticky reconnect feature -- for (eg) 2 minutes after a write, all
-subsequent connections should continue going to the read-write master.
+cookie expires relative to first edit; should be relative to last edit
 
 debug toolbar is wonky, and it's hard to tell if it's ux or underlying
 behavior. change ux to be a full-width bar at the bottom which displays
