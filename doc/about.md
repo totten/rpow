@@ -1,8 +1,8 @@
 # CiviCRM Replay-on-Write: About
 
 This is a small utility which allows CiviCRM to work with an opportunistic
-combination of read-only slave databases (RODB) and a read-write master
-database (RWDB).  The general idea is to connect to RODB optimistically
+combination of a read-write master database (RWDB) and read-only slave
+databases (RODB).  The general idea is to connect to RODB optimistically
 (expecting a typical read-only use-case) -- and then switch to RWDB *if*
 there is an actual write.
 
