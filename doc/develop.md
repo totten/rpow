@@ -34,6 +34,11 @@ This is handy for simulating master=>slave replication manually. It does
 not require any special mysqld options, but it does assume that you have a
 `civibuild`-based environment.
 
+## Debug Extension
+
+The bundled extension [rpowdbg](../rpowdbg/) provides a UI to help
+investigate how rpow works. I suggest enabling it.
+
 ## Usage Example (Development)
 
 Here are some example steps to see it working in development:
