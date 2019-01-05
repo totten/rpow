@@ -31,7 +31,7 @@ The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
 ## Requirements
 
-* PHP v5.4+
+* PHP v5.6+
 * CiviCRM 5.10+ (?)
 * rpow
 
