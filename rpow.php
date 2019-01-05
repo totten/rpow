@@ -4,10 +4,7 @@ require_once 'rpow.civix.php';
 use CRM_Rpow_ExtensionUtil as E;
 
 /**
- * Initialize civirpow - setup class-loading and apply the configuration
- * options.
- *
- * This helper is intended for use in
+ * Initialize civirpow state.
  *
  * @param array $config
  *   Ex: [
@@ -33,13 +30,12 @@ function rpow_init($config = []) {
     'stateMachine' => new CRM_Rpow_StateMachine(),
     'debug' => 1,
   ];
-  $config = array_merge($defaults, $config);
 
   global $civirpow;
-  $civirpow = $config;
+  $civirpow = array_merge($defaults, $civirpow ?: [], $config);
 
   // FIXME: cookie expires relative to first edit; should be relative to last edit
-  if (_rpow_has_cookie($config)) {
+  if (_rpow_has_cookie($civirpow)) {
     $civirpow['forceWrite'] = 1;
   }
 
@@ -84,8 +80,6 @@ function _rpow_update_cookie($config, $db) {
   ]);
   setcookie($config['cookieName'], $value, $expires, '/');
 }
-
-
 
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
