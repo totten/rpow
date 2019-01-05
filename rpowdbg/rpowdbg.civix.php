@@ -8,7 +8,7 @@
  */
 class CRM_Rpowdbg_ExtensionUtil {
   const SHORT_NAME = "rpowdbg";
-  const LONG_NAME = "org.civicrm.rpowdbg";
+  const LONG_NAME = "rpowdbg";
   const CLASS_PREFIX = "CRM_Rpowdbg";
 
   /**

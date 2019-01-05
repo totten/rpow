@@ -1,4 +1,4 @@
-Package: org.civicrm.rpowdbg
+Package: rpowdbg
 Copyright (C) 2019, Tim Otten <totten@civicrm.org>
 Licensed under the GNU Affero Public License 3.0 (below).
 
