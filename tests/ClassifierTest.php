@@ -39,6 +39,19 @@ class CRM_Rpow_ClassifierTest extends \PHPUnit_Framework_TestCase {
     return $strs;
   }
 
+  public function getActiveCommentExamples() {
+    $strs = [
+      ['/*!40101 SET NAMES utf8*/', 'SET NAMES utf8'],
+      ['/*!50101 SET NAMES utf8 */', 'SET NAMES utf8 '],
+      ['/*!40101 SET NAMES utf8  */', 'SET NAMES utf8 '],
+      ['/*!not-a-number SET NAMES UTF8*/', '/*!not-a-number SET NAMES UTF8*/'],
+      ['/*50101 SET NAMES utf8 */', '/*50101 SET NAMES utf8 */'],
+      ['SELECT /*!50111 DISTINCT*/ foo FROM /*!50111 bar*/', 'SELECT DISTINCT foo FROM bar'],
+      ['SELECT /*!50111 DISTINCT */ foo FROM bar', 'SELECT DISTINCT foo FROM bar'],
+    ];
+    return $strs;
+  }
+
   /**
    * @dataProvider getExampleFiles
    */
@@ -53,6 +66,14 @@ class CRM_Rpow_ClassifierTest extends \PHPUnit_Framework_TestCase {
   public function testStripStrings($input, $expected) {
     $c = new Classifier();
     $this->assertEquals($expected, $c->stripStrings($input));
+  }
+
+  /**
+   * @dataProvider getActiveCommentExamples
+   */
+  public function testCleanActiveComments($input, $expected) {
+    $c = new Classifier();
+    $this->assertEquals($expected, $c->cleanActiveComments($input));
   }
 
 }
