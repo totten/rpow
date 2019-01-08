@@ -22,16 +22,21 @@ class CRM_Rpow_ClassifierTest extends \PHPUnit_Framework_TestCase {
   }
 
   public function getExamplesWithStrings() {
-    return [
+    $strs = [
       ['SELECT "@x := 1"', 'SELECT ""'],
       ['SELECT @x := 1', 'SELECT @x := 1'],
       ['SELECT "foo", "bar"', 'SELECT "", ""'],
       ['SELECT "foo\'s", "bar\'s"', 'SELECT "", ""'],
+      ['SELECT "foo\\\"s"', 'SELECT ""'],
+      ['SELECT "foo\a"', 'SELECT ""'],
+      ['SELECT "foo\\""', 'SELECT ""'],
       ['SELECT "foo \"bar\"", "whiz"', 'SELECT "", ""'],
       ['SELECT foo("bar") AS `whiz`', 'SELECT foo("") AS ``'],
       ['SELECT \'foo("bar")\' AS `wh"iz`', 'SELECT \'\' AS ``'],
       ['SELECT `foo` AS `foobar` WHERE \'whim\'', 'SELECT `` AS `` WHERE \'\''],
     ];
+    // print_r($strs);
+    return $strs;
   }
 
   /**
