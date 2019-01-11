@@ -44,7 +44,7 @@ instances run on alternate, local-only ports with insecure passwords.
   git clone https://github.com/totten/rpow
   ```
 
-* Use [rundb](https://github.com/totten/rundb#quick-start)'s [clean-start]:
+* Use [rundb](https://github.com/totten/rundb)'s `clean-start`:
 
   ```
   git clone https://github.com/totten/rundb $HOME/src/rundb
