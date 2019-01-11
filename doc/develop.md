@@ -1,39 +1,5 @@
 # CiviCRM Replay-on-Write: Development
 
-## Installation (for local development)
-
-If you have created a local D7 development site using `civibuild`, and if you've already
-[configured Redis](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/), then you can simulate
-a master/slave toplogy using the script `rebuild-ro`.
-
-```
-## Get the code
-cd /var/www/sites/default/civicrm/ext
-git clone https://github.com/totten/rpow
-cd rpow
-
-## Setup a config file, esp:
-## - CIVIRO_PASS (for security)
-## - SITE_ROOT (for convenience)
-cp etc/rebuild-ro.conf.example etc/rebuild-ro.conf
-
-## Create a read-only DB. Register the DSN via civicrm.settings.d.
-./bin/rebuild-ro
-```
-
-The `rebuild-ro` script will:
-
-* Make a new database
-* Copy the CiviCRM tables to the new database
-* Add a user with read-only permission for the new database
-* Create a file `civicrm.settings.d/pre.d/100-civirpow.php` 
-  to call `rpow_init()` with the appropriate credentials
-  for the `masters` and `slaves`.
-
-This is handy for simulating master=>slave replication manually. It does
-not require any special mysqld options, but it does assume that you have a
-`civibuild`-based environment.
-
 ## Debug Extension
 
 The bundled extension [rpowdbg](../rpowdbg/) provides a UI to help

@@ -15,5 +15,5 @@ databases (RODB).  The general idea is to connect to RODB optimistically
 there is an actual write.
 
 * [about.md](doc/about.md): More detailed discussion of the design
-* [install.md](doc/install.md): Installation (non-development)
-* [develop.md](doc/develop.md): Installation and experimentation (development)
+* [install.md](doc/install.md): Installation
+* [develop.md](doc/develop.md): Development tips
