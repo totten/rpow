@@ -26,10 +26,10 @@
 
 ## Using rundb
 
-If you're doing local development on a `civibuild` site (e.g.
-`~/buildkit/build/dmaster`) then, you might use the `rundb` scripts to
-launch two local instances of `mysqld` in master-slave configuration.  These
-instances run on alternate, local-only ports with insecure passwords.
+If you're doing local development on a `civibuild` site, then you might use
+the `rundb` scripts to launch two local instances of `mysqld` in
+master-slave configuration.  These instances run on alternate, local-only
+ports with insecure passwords.
 
 * [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
@@ -40,7 +40,9 @@ instances run on alternate, local-only ports with insecure passwords.
   git clone https://github.com/totten/rpow
   ```
 
-* Follow the [rundb Quick Start](https://github.com/totten/rundb#quick-start)
+* In a separate terminal, follow the [rundb Quick Start](https://github.com/totten/rundb#quick-start)
+
+* Determine the path to your civibuild site (e.g. `~/buildkit/build/dmaster`).
 
 * Copy the "civi" DB from civibuild/amp to the master+slave servers, e.g.
 
