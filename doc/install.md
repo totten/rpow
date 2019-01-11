@@ -31,11 +31,18 @@ the [rundb](https://github.com/totten/rundb#quick-start) scripts to launch
 two local instances of `mysqld` in master-slave configuration.  These
 instances run on alternate, local-only ports with insecure passwords.
 
-* [Install the nix package manager](https://nixos.org/nix/)
+* Install the [nix package manager](https://nixos.org/nix/)
+
+  ```
+  curl https://nixos.org/nix/install | sh
+  ```
 
 * [Setup CiviCRM to store caches in Redis](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
-    * Tip: You can download and start redis-server with `nix run nixpkgs.redis -c redis-server`
+    * Tip: You can download and start redis-server. Any persistence/dumps will go in /tmp.
+      ```
+      cd /tmp; nix run nixpkgs.redis -c redis-server
+      ```
 
 * Download the `rpow` extension, e.g.
 
