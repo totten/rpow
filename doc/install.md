@@ -4,7 +4,7 @@
 
 * [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
-* Download the extension, e.g.
+* Download the `rpow` extension, e.g.
 
   ```
   cd /var/www/sites/default/civicrm/ext
@@ -27,20 +27,30 @@
 ## Using rundb
 
 If you're doing local development on a `civibuild` site, then you might use
-the `rundb` scripts to launch two local instances of `mysqld` in
-master-slave configuration.  These instances run on alternate, local-only
-ports with insecure passwords.
+the [rundb](https://github.com/totten/rundb#quick-start) scripts to launch
+two local instances of `mysqld` in master-slave configuration.  These
+instances run on alternate, local-only ports with insecure passwords.
 
-* [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
+* [Install the nix package manager](https://nixos.org/nix/)
 
-* Download the extension, e.g.
+* [Setup CiviCRM to store caches in Redis](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
+
+    * Tip: You can download and start redis-server with `nix run nixpkgs.redis -c redis-server`
+
+* Download the `rpow` extension, e.g.
 
   ```
   cd /var/www/sites/default/civicrm/ext
   git clone https://github.com/totten/rpow
   ```
 
-* In a separate terminal, follow the [rundb Quick Start](https://github.com/totten/rundb#quick-start)
+* Use [rundb](https://github.com/totten/rundb#quick-start)'s [clean-start]:
+
+  ```
+  git clone https://github.com/totten/rundb $HOME/src/rundb
+  cd $HOME/src/rundb
+  ./scripts/clean-start
+  ```
 
 * Determine the path to your civibuild site (e.g. `~/buildkit/build/dmaster`).
 
@@ -69,7 +79,7 @@ copy of your database.
 
 * [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
-* Download the extension, e.g.
+* Download the `rpow` extension, e.g.
 
   ```
   cd /var/www/sites/default/civicrm/ext
