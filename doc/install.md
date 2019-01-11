@@ -44,21 +44,19 @@ instances run on alternate, local-only ports with insecure passwords.
   git clone https://github.com/totten/rpow
   ```
 
-* Use [rundb](https://github.com/totten/rundb)'s `clean-start`:
+* Use [rundb](https://github.com/totten/rundb) to launch a pair of
+  master-slave MariaDB servers on `localhost`.  The data will be stored in
+  `/tmp/master` and `/tmp/slave`. This can be summarized as one command:
 
   ```
-  git clone https://github.com/totten/rundb $HOME/src/rundb
-  cd $HOME/src/rundb
-  ./scripts/clean-start
+  cd /tmp; nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command clean-start
   ```
 
-* Determine the path to your civibuild site (e.g. `~/buildkit/build/dmaster`).
-
-* Copy the "civi" DB from civibuild/amp to the master+slave servers, e.g.
+* Copy the "civi" DB from civibuild/amp to the master+slave servers. Be sure
+  to adjust the path to the website (e.g. `~/buildkit/build/dmaster`).
 
   ```
-  cd rundb
-  amp sql:dump -r ~/buildkit/build/dmaster -N civi | nix-shell -A master --command 'load-db civi'
+  cd /tmp; amp sql:dump -r ~/buildkit/build/dmaster -N civi | nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'load-db civi'
   ```
 
 * Edit `civicrm.settings.php`. In lieu of setting `define('CIVICRM_DSN', '...')`, call this:
