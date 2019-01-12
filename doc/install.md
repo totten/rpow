@@ -24,12 +24,13 @@
   ]);
   ```
 
-## Using rundb
+## Using civibuild and rundb
 
-If you're doing local development on a `civibuild` site, then you might use
-the [rundb](https://github.com/totten/rundb#quick-start) scripts to launch
-two local instances of `mysqld` in master-slave configuration.  These
-instances run on alternate, local-only ports with insecure passwords.
+If you usually develop locally with a `civibuild` site, then you might temporarily spin-up a master-slave DB (via
+[rundb](https://github.com/totten/rundb)) and temporarily migrate to it.  These instances run on alternate, local-only
+ports with insecure passwords.
+
+./toggle-dsn -r ~/bknix/build/dmaster --rundb on
 
 * Install the [nix package manager](https://nixos.org/nix/)
 
@@ -49,31 +50,17 @@ instances run on alternate, local-only ports with insecure passwords.
   ```
   cd /var/www/sites/default/civicrm/ext
   git clone https://github.com/totten/rpow
+  cd rpow
   ```
 
-* Use [rundb](https://github.com/totten/rundb) to launch a pair of
-  master-slave MariaDB servers on `localhost`.  The data will be stored in
-  `/tmp/master` and `/tmp/slave`. This can be summarized as one command:
+* Setup rundb
 
   ```
-  cd /tmp; nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command clean-start
-  ```
+  ## Start the temporary database process
+  ./bin/use-rundb fg
 
-* Copy the "civi" DB from civibuild/amp to the master+slave servers. Be sure
-  to adjust the path to the website (e.g. `~/buildkit/build/dmaster`).
-
-  ```
-  cd /tmp; amp sql:dump -r ~/buildkit/build/dmaster -N civi | nix-shell https://github.com/totten/rundb/archive/master.tar.gz --command 'load-db civi'
-  ```
-
-* Edit `civicrm.settings.php`. In lieu of setting `define('CIVICRM_DSN', '...')`, call this:
-
-  ```php
-  require_once '<RPOW-SRC>/autoload.php';
-  rpow_init([
-    'masters' => ['mysql://root:@127.0.0.1:3330/civi?new_link=true'],
-    'slaves' => ['mysql://reader:@127.0.0.1:3331/civi?new_link=true'],
-  ]);
+  ## Migate to the new database
+  ./bin/use-rundb copy on
   ```
 
 ## Using rebuild-ro
