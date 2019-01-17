@@ -30,8 +30,6 @@ If you usually develop locally with a `civibuild` site, then you might temporari
 [rundb](https://github.com/totten/rundb)) and temporarily migrate to it.  These instances run on alternate, local-only
 ports with insecure passwords.
 
-./toggle-dsn -r ~/bknix/build/dmaster --rundb on
-
 * Install the [nix package manager](https://nixos.org/nix/)
 
   ```
@@ -40,7 +38,7 @@ ports with insecure passwords.
 
 * [Setup CiviCRM to store caches in Redis](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
-    * Tip: You can download and start redis-server. Any persistence/dumps will go in /tmp.
+    * Tip: This command will download and start redis-server. Any persistence/dumps will go in /tmp.
       ```
       cd /tmp; nix run nixpkgs.redis -c redis-server
       ```
@@ -56,9 +54,10 @@ ports with insecure passwords.
 * Setup rundb
 
   ```
-  ## Start the temporary database process
+  ## Start the temporary database process in the foreground
   ./bin/use-rundb fg
 
+  ## Open a console; then...
   ## Migate to the new database
   ./bin/use-rundb copy on
   ```
