@@ -2,7 +2,7 @@
 
 use CRM_Rpow_StateMachine as StateMachine;
 
-class CRM_Rpow_StateMachineTest extends \PHPUnit_Framework_TestCase {
+class CRM_Rpow_StateMachineTest extends \PHPUnit\Framework\TestCase {
 
   public function testNormalLifecycle() {
     $s = new StateMachine();
