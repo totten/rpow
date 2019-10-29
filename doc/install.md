@@ -1,6 +1,15 @@
 # CiviCRM Replay-on-Write: Installation
 
-## General/Abstract
+The "General" section gives a general overview of the install process. As many specifics can depend on your
+organization/deployment, it is a bit light on MySQL details - and only gives details that are specific to `rpow`.
+
+The subsequent sections provide more specific, concrete install options. These are geared toward local development
+and experimentation:
+
+* "Using civibuild and rundb" provides the most realistic simulation. It launches two new instances of `mysqld` and automatically syncs between their databases.
+* "Using rebuild-ro" provides a more manual simulation. It uses your existing `mysqld` and makes a read-only copy of the Civi DB. It does *not* sync automatically - you must run `rebuild-ro` whenever you want to sync. (*This is useful for carefully inspecting/playing each step or edge-case manually.*)
+
+## General
 
 * [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
 
