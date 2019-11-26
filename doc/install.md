@@ -21,7 +21,7 @@ and experimentation:
   ```
 
 * Setup the MySQL read-write and read-only databases -- and determine their
-  DSNs.  That process is outside the scope of this README. See also: [MySQL 5.7 Reference Manual: Replication Howto](https://dev.mysql.com/doc/refman/5.7/en/replication-howto.html):
+  DSNs.  That process is outside the scope of this README. See also: [MySQL 5.7 Reference Manual: Replication Howto](https://dev.mysql.com/doc/refman/5.7/en/replication-howto.html)
 
 * Edit `civicrm.settings.php`. In lieu of setting `define('CIVICRM_DSN', '...')`, call this:
 
