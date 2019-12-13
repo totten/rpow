@@ -61,12 +61,12 @@ of RWDB) -- so it may start with a dirty-read.  A few mitigating
 considerations:
 
 * If your environment regularly has a perceptible propagation delay between the RWDB+RODB (e.g.  30sec), then users
-  may be more sensitive to dirty-reads within the propagation period (e.g.  30sec).  Use an HTTP cookie or HTTP
-  session-variable to force them on enable `forceWriteMode()` for new page-views in the subsequent 30-60 sec.  (TODO:
+  may be sensitive to dirty-reads within the propagation period (e.g.  30sec).  Use an HTTP cookie or HTTP
+  session-variable to force them onto RWDB (i.e. `forceWriteMode()`) for the subsequent 30-60 sec.  (TODO:
   Example code)
 
 * Hopefully, some dirty-reads are acceptable (*or acceptably infrequent*). If dirty-reads are a total show-stopper, then
-  this may be the wrong approach for your use-case.
+  replay-on-write may be the wrong approach for your use-case.
 
 * If you know that a use-case will be writing and must have fresh reads, you can give a hint
   to force it into write mode; either
