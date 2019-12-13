@@ -1,7 +1,7 @@
 # CiviCRM Replay-on-Write: Installation
 
-The "General" section gives a general overview of the install process. As many specifics can depend on your
-organization/deployment, it is a bit light on MySQL details - and only gives details that are specific to `rpow`.
+The "General" section gives a general overview of the install process. Many specifics can depend on your
+organization/deployment, iso t is a bit light on MySQL details - and only gives details that are specific to `rpow`.
 
 The subsequent sections provide more specific, concrete install options. These are geared toward local development
 and experimentation:
