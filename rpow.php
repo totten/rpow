@@ -40,6 +40,7 @@ function rpow_init($config = []) {
   }
 
   define('CIVICRM_DSN', 'civirpow://');
+  define('CIVICRM_DRUSH_DSN', $config['masters'][0]);
   // define('CIVICRM_DSN', $config['masters'][0]);
   // define('CIVICRM_DSN', $config['slaves'][0]);
 }
