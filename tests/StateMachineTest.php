@@ -22,7 +22,7 @@ class CRM_Rpow_StateMachineTest extends \PHPUnit\Framework\TestCase {
       [
         'SET @contact_id = 123',
         'CREATE TEMPORARY TABLE foobar AS SELECT id FROM whizbang',
-        'UPDATE civicrm_contact SET do_not_phone = 1 WHERE id IN (SELECT id FROM foobar)'
+        'UPDATE civicrm_contact SET do_not_phone = 1 WHERE id IN (SELECT id FROM foobar)',
       ],
       $s->getBuffer()
     );
