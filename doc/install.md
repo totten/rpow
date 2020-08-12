@@ -33,6 +33,38 @@ and experimentation:
   ]);
   ```
 
+## Using civibuild and harvey-dent
+
+If you're doing local development on a `civibuild` site, then you can simulate a master/slave topology using the script
+`harvey-dent`.  This will create a split between two *user accounts* which have access to the same DB.  The original
+MySQL account has read-write access -- and the new secondary account has read-only access.
+
+This is handy for quick-and-dirty experiments without having a proper MySQL replication environment.
+
+* [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
+
+    * Note: If you skip this step, then nearly every page-request will require writing to the SQL cache table, and the
+      system will reconnect frequently.
+
+* Download the `rpow` extension, e.g.
+
+  ```
+  cd ~/buildkit/build/dmaster/web/sites/default/civicrm/ext
+  git clone https://github.com/totten/rpow
+  ```
+
+* Create the read-only user and register DSNs.
+
+  ```
+  ./bin/harvey-dent -r ~/buildkit/build/dmaster/web/
+  ```
+
+The `harvey-dent` script will:
+
+* Add a user with read-only permission for the existing Civi database.
+* Create a file `civicrm.settings.d/pre.d/100-civirpow.php` to call `rpow_init()` with the appropriate credentials
+  for the `masters` and `slaves`.
+
 ## Using civibuild and rundb
 
 If you usually develop locally with a `civibuild` site, then you might temporarily spin-up a master-slave DB (via
