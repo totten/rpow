@@ -6,6 +6,7 @@ organization/deployment, iso t is a bit light on MySQL details - and only gives 
 The subsequent sections provide more specific, concrete install options. These are geared toward local development
 and experimentation:
 
+* "Using civibuild and harvey-dent" provides the lightest simulation. It uses the existing DB and sets up a split personality, with two users (RO user and RW user).
 * "Using civibuild and rundb" provides the most realistic simulation. It launches two new instances of `mysqld` and automatically syncs between their databases.
 * "Using rebuild-ro" provides a more manual simulation. It uses your existing `mysqld` and makes a read-only copy of the Civi DB. It does *not* sync automatically - you must run `rebuild-ro` whenever you want to sync. (*This is useful for carefully inspecting/playing each step or edge-case manually.*)
 
@@ -42,9 +43,6 @@ MySQL account has read-write access -- and the new secondary account has read-on
 This is handy for quick-and-dirty experiments without having a proper MySQL replication environment.
 
 * [Setup CiviCRM to store caches in Redis.](https://docs.civicrm.org/sysadmin/en/latest/setup/cache/)
-
-    * Note: If you skip this step, then nearly every page-request will require writing to the SQL cache table, and the
-      system will reconnect frequently.
 
 * Download the `rpow` extension, e.g.
 
