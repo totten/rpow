@@ -60,24 +60,45 @@ function rpow_init($config = []) {
 }
 
 function _rpow_signer($config) {
-  return new \CRM_Utils_Signer($config['cookieSigningKey'], ['exp']);
+  if (!class_exists('CRM_Utils_Signer')) {
+    error_log('civirpow: CRM_Utils_Signer not available (autoload not ready). Skipping signature check.');
+    return null;
+  }
+
+  error_log('civirpow: CRM_Utils_Signer is available. Proceeding with signature check.');
+  return new CRM_Utils_Signer($config['cookieSigningKey'], ['exp']);
 }
+
 
 function _rpow_has_cookie($config) {
   if (isset($_COOKIE[$config['cookieName']])) {
+    error_log('civirpow: Found cookie "' . $config['cookieName'] . '"');
     $cookie = json_decode($_COOKIE[$config['cookieName']], TRUE);
-  }
-  else {
-    $cookie = NULL;
+  } else {
+    error_log('civirpow: No cookie named "' . $config['cookieName'] . '" found.');
+    return FALSE;
   }
 
-  if (isset($cookie['exp']) && $cookie['exp'] > time() && _rpow_signer($config)->validate($cookie['sig'], $cookie)) {
-    return TRUE;
+  if (!isset($cookie['exp']) || $cookie['exp'] <= time()) {
+    error_log('civirpow: Cookie expired or missing "exp" field.');
+    return FALSE;
   }
-  else {
+
+  $signer = _rpow_signer($config);
+  if (!$signer) {
+    error_log('civirpow: Skipping signature validation due to missing signer.');
+    return FALSE;
+  }
+
+  if ($signer->validate($cookie['sig'], $cookie)) {
+    error_log('civirpow: Cookie signature is valid.');
+    return TRUE;
+  } else {
+    error_log('civirpow: Cookie signature is INVALID.');
     return FALSE;
   }
 }
+
 
 function _rpow_update_cookie($config, $db) {
   $signer = _rpow_signer($config);
